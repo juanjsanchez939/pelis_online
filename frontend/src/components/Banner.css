@@ -1,0 +1,235 @@
+.banner {
+  width: min(100%, 1440px);
+  height: clamp(420px, 78vh, 760px);
+  position: relative;
+  margin: 0 auto 2rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  isolation: isolate;
+}
+
+.banner-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(64px, 9vw, 128px);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.96;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 215, 0, 0.35), transparent 24%),
+    radial-gradient(circle at 50% 90%, rgba(255, 215, 0, 0.22), transparent 24%),
+    linear-gradient(180deg, rgba(14, 14, 18, 0.98), rgba(28, 28, 34, 0.96));
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.banner-side::before {
+  content: "";
+  position: absolute;
+  inset: 16px 14px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.18) 0,
+      rgba(255, 255, 255, 0.18) 18px,
+      transparent 18px,
+      transparent 34px
+    );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.banner-side::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 18px, #111 0 4px, transparent 5px),
+    radial-gradient(circle at 50% calc(100% - 18px), #111 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 50%, rgba(229, 9, 20, 0.08), transparent 58%);
+  opacity: 0.9;
+}
+
+.banner-side-left {
+  left: 0;
+  border-top-left-radius: 28px;
+  border-bottom-left-radius: 28px;
+}
+
+.banner-side-right {
+  right: 0;
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.68) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.45) 0%, transparent 18%, transparent 82%, rgba(0,0,0,0.45) 100%);
+  z-index: 0;
+  border-radius: inherit;
+}
+
+.banner-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  transform: scale(1.03);
+  z-index: 0;
+}
+
+.banner-image.active {
+  opacity: 1;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem 3rem;
+  max-width: 920px;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  animation: bannerFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes bannerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.banner-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 0.5rem;
+}
+
+.banner-reel {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.banner-reel-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid #e50914;
+  position: relative;
+  animation: spin 5s linear infinite;
+  box-shadow: 0 0 30px rgba(229, 9, 20, 0.4), inset 0 0 15px rgba(229, 9, 20, 0.1);
+}
+
+.banner-reel-ring::before,
+.banner-reel-ring::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #e50914;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.6);
+}
+.banner-reel-ring::before { top: -4px; left: 20px; }
+.banner-reel-ring::after { bottom: -4px; left: 20px; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.banner h1 {
+  font-size: 4.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 0;
+  color: #fff;
+}
+
+.banner h1 span {
+  background: linear-gradient(135deg, #e50914, #ff4444);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.banner p {
+  font-size: 1.2rem;
+  margin: 1rem 0 2rem;
+  opacity: 0.8;
+  font-weight: 300;
+}
+
+.banner .btn-primary {
+  background: linear-gradient(135deg, #e50914, #ff6b6b);
+  border: none;
+  color: #fff;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.banner .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(229, 9, 20, 0.4);
+}
+
+@media (max-width: 768px) {
+  .banner {
+    width: calc(100% - 1rem);
+    height: 62vh;
+    border-radius: 20px;
+  }
+
+  .banner-side {
+    width: 44px;
+  }
+
+  .banner-side::before {
+    inset: 10px 8px;
+    border-radius: 12px;
+  }
+
+  .banner-content {
+    padding: 1.5rem;
+  }
+
+  .banner h1 {
+    font-size: 2.5rem;
+  }
+  .banner p {
+    font-size: 1rem;
+  }
+}

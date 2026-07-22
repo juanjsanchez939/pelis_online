@@ -1,0 +1,30 @@
+POST http://localhost:3000/api/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "1234"
+}
+
+###
+
+POST http://localhost:3000/api/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "admin01",
+  "password": "1234"
+}
+
+###
+
+POST http://localhost:3000/api/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": "12345"
+}

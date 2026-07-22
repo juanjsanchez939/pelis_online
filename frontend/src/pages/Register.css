@@ -1,0 +1,127 @@
+
+.login-page {
+  width: 100vw;
+  min-height: 100vh; 
+  display: grid;
+ 
+  background-color: #121212;
+  justify-content: center;
+  align-items: start; 
+  padding-top: 120px; 
+  box-sizing: border-box;
+}
+
+/* Formulario centrado y estilizado */
+.login-form {
+  background-color: #1f1f1f; 
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
+  animation: fadeIn 0.8s ease;
+}
+
+/* LOGO */
+.logo {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--white);
+}
+
+.logo span {
+  color: var(--red);
+}
+
+/* TITULO */
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+
+/* LABELS */
+.login-form label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+/* INPUTS */
+.login-form input {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background-color: #2a2a2a;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.login-form input:focus {
+  outline: 2px solid var(--red);
+  background-color: #3a3a3a;
+}
+
+/* BOTÓN */
+.login-form button {
+  width: 100%;
+  background: var(--red);
+  border: none;
+  padding: 0.8rem;
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-form button:hover {
+  background: #b00710;
+  transform: scale(1.03);
+}
+
+/* LINK AL LOGIN */
+.register-text {
+  margin-top: 1rem;
+  text-align: center;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.register-link {
+  color: var(--red);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    padding: 2rem 1.5rem;
+  }
+  .logo {
+    font-size: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
