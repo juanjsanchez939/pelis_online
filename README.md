@@ -1,100 +1,150 @@
-# Pelis Online
+# PelisOnline
 
-Pelis Online es una aplicacion multiplataforma para explorar peliculas y gestionar usuarios. El repositorio esta organizado en tres partes:
+Catálogo de películas multiplataforma con autenticación de usuarios. Web + API + App móvil.
 
-- `backend`: API en Node.js + Express conectada a MongoDB.
-- `frontend`: aplicacion web en React + Vite.
-- `mobile`: aplicacion movil en Expo / React Native.
+## Estructura
 
-## Que hace el proyecto
+```
+pelis_online/
+├── backend/       # API REST (Node.js + Express + MongoDB)
+├── frontend/      # Web app (React 19 + Vite + Bootstrap)
+└── mobile/        # App móvil (Expo SDK 57 + React Native)
+```
 
-La web permite navegar el catalogo, filtrar peliculas, ver detalle, iniciar sesion, registrarse y acceder al perfil de usuario. El backend expone una API REST para autenticacion y administracion de usuarios, y la app movil reutiliza la misma base funcional desde un entorno nativo.
+## Funcionalidades
+
+- Catálogo de películas organizado por género (Acción, Aventura, Animadas, Bélicas, Comedias, Terror)
+- Búsqueda por título o descripción
+- Top 10 mejor valoradas
+- Detalle de película: sinopsis, reparto, director, duración, rating, tráiler
+- Sistema de comentarios y puntuación
+- Favoritos (persistidos por dispositivo)
+- Registro e inicio de sesión (JWT)
+- Tema dark/light
+- Perfil de usuario con gestión de favoritos
+- Página de ayuda con FAQ y búsqueda IMDb
 
 ## Requisitos
 
-- Node.js 18 o superior.
-- npm.
-- MongoDB local o una conexion a MongoDB Atlas.
-- Para mobile: Expo Go, Android Studio o Xcode, segun la plataforma que quieras usar.
+- **Node.js** 18+
+- **npm**
+- **MongoDB** (local o Atlas)
+- Para mobile: **Expo Go** (Android/iOS) o Android Studio / Xcode
 
-## Configuracion del backend
+---
 
-El backend necesita una configuracion local que no se versiona en el repositorio. Crea el archivo `backend/config.local.js` con algo similar a esto:
+## Backend
+
+API REST con autenticación JWT y conexión a MongoDB.
+
+### Configuración
+
+Crear `backend/config.local.js`:
 
 ```js
 export default {
   port: 3001,
-  jwtKey: 'una_clave_secreta_larga',
+  jwtKey: 'clave_secreta_segura',
   dbConnection: 'mongodb://127.0.0.1:27017/pelis_online',
 };
 ```
 
-Tambien puedes definir estos valores por variables de entorno:
+O por variables de entorno: `PORT`, `JWT_KEY`, `DB_CONNECTION`.
 
-- `PORT`
-- `JWT_KEY`
-- `DB_CONNECTION`
+### Endpoints
 
-## Como arrancarlo
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| POST | `/api/login` | No | Iniciar sesión |
+| POST | `/api/register` | No | Crear cuenta |
+| GET | `/api/user` | Admin | Listar usuarios |
+| POST | `/api/user` | Admin | Crear usuario |
+| PATCH | `/api/user/:uuid` | Admin | Editar usuario |
+| DELETE | `/api/user/:uuid` | Admin | Eliminar usuario |
 
-### 1. Backend
-
-Desde la carpeta `backend`:
-
-```bash
-npm install
-npm run dev
-```
-
-El servidor levanta en `http://localhost:3001` por defecto y expone las rutas bajo `/api`.
-
-Endpoints principales:
-
-- `POST /api/login`
-- `POST /api/register`
-- `GET /api/user`
-- `POST /api/user`
-- `PATCH /api/user/:uuid`
-- `DELETE /api/user/:uuid`
-
-### 2. Frontend web
-
-Desde la carpeta `frontend`:
+### Iniciar
 
 ```bash
+cd backend
 npm install
-npm run dev
+npm run dev    # → http://localhost:3001
 ```
 
-Vite suele levantar en `http://localhost:5173`.
+---
 
-### 3. Mobile
+## Frontend (Web)
 
-Desde la carpeta `mobile`:
+React 19 + Vite + Bootstrap 5. Consume la API del backend. Las imágenes y datos de películas son estáticos (`src/mocks/products.json`).
 
 ```bash
+cd frontend
 npm install
-npm start
+npm run dev    # → http://localhost:5173
 ```
 
-Despues puedes abrir la app con Expo Go o correrla en un emulador/dispositivo.
+El proxy de Vite redirige `/api/*` al backend en `localhost:3001`.
 
-## Orden recomendado para desarrollo
+---
 
-1. Levantar primero el backend.
-2. Levantar despues el frontend web.
-3. Si vas a probar la version movil, arrancar tambien Expo.
+## Mobile (Expo / React Native)
 
-## Estructura general
+App nativa con Expo SDK 57. Comparte la misma API y datos del backend.
 
-```text
-backend/   API, autenticacion, usuarios y middleware
-frontend/  Web principal en React
-mobile/    App movil en React Native / Expo
+### Configuración de red
+
+Editar `mobile/src/config.js` con la IP de tu PC en la red local:
+
+```js
+export const API_BASE_URL = 'http://192.168.X.X:3001';   // Backend
+export const IMAGE_BASE_URL = 'http://192.168.X.X:5173';  // Imágenes (Vite)
 ```
+
+### Iniciar
+
+```bash
+cd mobile
+npm install
+npx expo start          # QR para Expo Go
+npx expo start --tunnel # Si el firewall bloquea la conexión
+npx expo run:android    # Development build (requiere Android Studio)
+```
+
+### Permisos de firewall (Windows)
+
+Si el celu no se conecta, abrir estos puertos (PowerShell como admin):
+
+```powershell
+New-NetFirewallRule -DisplayName "Expo 8081" -Direction Inbound -Protocol TCP -LocalPort 8081 -Action Allow
+New-NetFirewallRule -DisplayName "Vite 5173" -Direction Inbound -Protocol TCP -LocalPort 5173 -Action Allow
+New-NetFirewallRule -DisplayName "Backend 3001" -Direction Inbound -Protocol TCP -LocalPort 3001 -Action Allow
+```
+
+### Vite en red
+
+Para que el celu acceda a las imágenes, Vite debe escuchar en la red. El archivo `frontend/vite.config.js` ya incluye `host: true`.
+
+---
+
+## Orden de ejecución
+
+1. Backend (`cd backend && npm run dev`)
+2. Frontend (`cd frontend && npm run dev`)
+3. Mobile (`cd mobile && npx expo start`)
+
+---
+
+## Stack técnico
+
+| Capa | Tecnología |
+|------|------------|
+| Backend | Node.js, Express 5, MongoDB (Mongoose), JWT, bcrypt |
+| Frontend | React 19, Vite 7, React Router 7, Bootstrap 5, Axios |
+| Mobile | Expo SDK 57, React Native 0.86, React Navigation 7, AsyncStorage |
+
+---
 
 ## Notas
 
-- Si el backend no arranca, revisa primero `backend/config.local.js` y la conexion a MongoDB.
-- Si el frontend no muestra datos, asegurate de que el backend este corriendo y accesible desde la URL configurada en el cliente.
-- El proyecto usa datos y recursos propios, por lo que puedes levantarlo en local sin dependencias externas adicionales.
+- Las imágenes de películas se sirven desde el frontend (Vite). Ambos deben estar corriendo para verlas en la app mobile.
+- El backend requiere MongoDB funcionando. Si usás Atlas, configurá la URI en `config.local.js`.
+- La app mobile usa `AsyncStorage` en vez de `localStorage` para persistir sesión y favoritos.
