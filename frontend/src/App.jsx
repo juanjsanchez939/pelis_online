@@ -12,6 +12,7 @@ import Register from "./pages/Register.jsx"
 import ProductPage from './pages/ProductPage.jsx';
 import Ayuda from './pages/Ayuda.jsx'
 import UserPanel from './pages/UserPanel.jsx'
+import AdminPanel from './pages/AdminPanel.jsx'
 import Banner from './components/Banner.jsx'
 import OnlineUsers from './components/OnlineUsers.jsx'
 
@@ -133,6 +134,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/perfil" element={<UserPanel />} />
+        <Route path="/admin" element={<AdminPanel />} />
       </Routes>
 
       <div style={{

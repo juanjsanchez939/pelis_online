@@ -1,0 +1,232 @@
+
+.admin-panel-page {
+  max-width: 1100px;
+  margin: 100px auto 60px;
+  padding: 0 20px;
+  color: var(--text-color);
+}
+
+.admin-panel-page h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e50914;
+  padding-bottom: 0.5rem;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-tab {
+  padding: 0.6rem 1.8rem;
+  border: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.admin-tab:hover {
+  border-color: #e50914;
+  color: #fff;
+}
+
+.admin-tab.active {
+  background: #e50914;
+  color: white;
+  border-color: #e50914;
+}
+
+.admin-section {
+  margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-message {
+  background: #1a3a1a;
+  border: 1px solid #2d6a2d;
+  color: #4ade80;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.admin-form {
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-form h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+  color: #e50914;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.admin-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.admin-field label {
+  display: block;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.admin-field input,
+.admin-field textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.admin-field input:focus,
+.admin-field textarea:focus {
+  outline: none;
+  border-color: #e50914;
+}
+
+.admin-field textarea {
+  resize: vertical;
+}
+
+.admin-form-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.admin-btn {
+  padding: 0.55rem 1.4rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-btn.save {
+  background: #e50914;
+  color: white;
+}
+
+.admin-btn.save:hover {
+  background: #b20710;
+}
+
+.admin-btn.cancel {
+  background: #333;
+  color: #ccc;
+}
+
+.admin-btn.cancel:hover {
+  background: #444;
+}
+
+.admin-btn.small {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.admin-btn.edit {
+  background: #2563eb;
+  color: white;
+}
+
+.admin-btn.edit:hover {
+  background: #1d4ed8;
+}
+
+.admin-btn.delete {
+  background: #dc2626;
+  color: white;
+}
+
+.admin-btn.delete:hover {
+  background: #b91c1c;
+}
+
+.admin-table-container {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  background: #111;
+  color: #888;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #333;
+}
+
+.admin-table td {
+  border-bottom: 1px solid #222;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background: #1c1c1c;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.empty-table {
+  text-align: center;
+  color: #666;
+  padding: 2rem !important;
+}
+
+.auth-message {
+  text-align: center;
+  margin-top: 120px;
+  color: #e50914;
+  font-size: 1.1rem;
+}

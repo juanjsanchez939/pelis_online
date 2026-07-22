@@ -32,7 +32,7 @@ export class LoginService {
       },
       config.jwtKey,
       {
-        expiresIn: '24h' // El token expirará en 1 hora
+        expiresIn: '24h' // El token expirará en 24 hora
       }
     );
 

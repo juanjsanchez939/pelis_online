@@ -91,6 +91,7 @@ const Navbar = ({ theme, toggleTheme }) => {
         <Link to="/">Inicio</Link>
         <Link to="/ayuda">Más Info</Link>
         {user && <Link to="/perfil">Mi Perfil</Link>}
+        {user?.roles?.includes("admin") && <Link to="/admin">Admin</Link>}
       </nav>
 
       <div className="actions">
