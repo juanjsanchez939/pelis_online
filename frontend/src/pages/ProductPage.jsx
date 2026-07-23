@@ -6,15 +6,7 @@ import { SnackbarContext } from "../context/snackbarContext.js";
 import { UserContext } from "../context/UserContext.js";
 import "./ProductPage.css";
 import { HeartIcon, HeartFilledIcon } from "../components/icons.jsx";
-
-const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
-
-function getImageUrl(thumbnail) {
-  if (!thumbnail) return "/portadas/default.jpg";
-  if (thumbnail.startsWith("http")) return thumbnail;
-  if (thumbnail.startsWith("/portadas/")) return thumbnail;
-  return `${TMDB_IMAGE_BASE_URL}${thumbnail}`;
-}
+import { getImageUrl, API_BASE_URL } from "../utils/shared.js";
 
 function Stars({ rating }) {
   const full = Math.floor(rating);
@@ -50,7 +42,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/movies/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/movies/${id}`);
         setMovie(res.data);
       } catch (e) {
         console.error('Error fetching movie:', e);

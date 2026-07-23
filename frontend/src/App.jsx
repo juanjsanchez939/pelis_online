@@ -6,6 +6,7 @@ import axios from 'axios'
 import { Header } from './components/Header.jsx'
 import { Footer } from './components/Footer.jsx'
 import { useFilters } from './hooks/useFilters.js'
+import { API_BASE_URL } from './utils/shared.js'
 import Login from './pages/Login.jsx'
 import Register from "./pages/Register.jsx"
 import ProductPage from './pages/ProductPage.jsx';
@@ -23,7 +24,7 @@ function App() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const res = await axios.get('http://localhost:3001/movies');
+        const res = await axios.get(`${API_BASE_URL}/movies`);
         setProducts(res.data);
       } catch (e) {
         console.error('Error fetching movies:', e);

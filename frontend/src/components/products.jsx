@@ -5,8 +5,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { SnackbarContext } from "../context/snackbarContext.js";
 import { UserContext } from "../context/UserContext.js";
-
-const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+import { getImageUrl } from "../utils/shared.js";
 
 export function Products({ products, limit }) {
   const displayed = limit ? products.slice(0, limit) : products;
@@ -21,13 +20,6 @@ export function Products({ products, limit }) {
     } else {
       showSnackbar(`Agregaste "${movie.title}" a favoritos`, "success");
     }
-  };
-
-  const getImageUrl = (thumbnail) => {
-    if (!thumbnail) return "/portadas/default.jpg";
-    if (thumbnail.startsWith("http")) return thumbnail;
-    if (thumbnail.startsWith("/portadas/")) return thumbnail;
-    return `${TMDB_IMAGE_BASE_URL}${thumbnail}`;
   };
 
   return (

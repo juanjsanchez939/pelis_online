@@ -1,7 +1,5 @@
 import "./GenreSidebar.css";
-
-const GENRE_ORDER = ["Acción", "Aventura", "Animadas", "Bélicas", "Comedias", "Terror"];
-const GENRE_ICONS = { "Acción": "💥", "Aventura": "🗺️", "Animadas": "🎬", "Bélicas": "🎖️", "Comedias": "😂", "Terror": "👻" };
+import { GENRE_ORDER, GENRE_ICONS } from "../utils/shared.js";
 
 export default function GenreSidebar({ selectedGenre, onSelectGenre, filteredGenres }) {
   return (

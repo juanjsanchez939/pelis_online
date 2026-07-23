@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext.js";
 import { FiltersContext } from "../context/FiltersContext.js";
 import axios from "axios";
+import { getImageUrl, API_BASE_URL } from "../utils/shared.js";
 import "./navbar.css";
 
 const DarkIcon = () => (
@@ -38,7 +39,7 @@ const Navbar = ({ theme, toggleTheme }) => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const res = await axios.get('http://localhost:3001/movies');
+        const res = await axios.get(`${API_BASE_URL}/movies`);
         setAllProducts(res.data);
       } catch (e) {
         console.error('Error fetching movies for search:', e);
@@ -139,7 +140,7 @@ const Navbar = ({ theme, toggleTheme }) => {
                   className="search-result-item"
                   onClick={() => handleResultClick(movie.id)}
                 >
-                  <img src={(movie.thumbnail?.startsWith("/portadas/") || movie.thumbnail?.startsWith("http") || !movie.thumbnail) ? (movie.thumbnail || "/portadas/default.jpg") : `https://image.tmdb.org/t/p/w500${movie.thumbnail}`} alt={movie.title} />
+                  <img src={getImageUrl(movie.thumbnail)} alt={movie.title} />
                   <div className="search-result-info">
                     <span className="search-result-title">{movie.title}</span>
                     <span className="search-result-meta">{movie.year} | {movie.category?.[0]} | ★ {movie.rating}</span>
