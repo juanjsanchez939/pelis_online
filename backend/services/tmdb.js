@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = '8d7cd14f75ff2bb827d966152a610eab';
+const API_KEY = process.env.TMDB_API_KEY || '8d7cd14f75ff2bb827d966152a610eab';
 const TMDB = 'https://api.themoviedb.org/3';
 
 const GENRE_MAP = {

@@ -30,7 +30,7 @@ export default function ProductDetailScreen({ route, navigation }) {
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/movies/${id}`);
+        const res = await fetch(`${API_BASE_URL}/api/movies/${id}`);
         const data = await res.json();
         setMovie(data);
         setComments(data.comments || []);

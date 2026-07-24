@@ -9,7 +9,6 @@ export default function AdminPanel() {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("usuarios");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!user || !user.roles?.includes("admin")) {

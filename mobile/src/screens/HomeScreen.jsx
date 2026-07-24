@@ -48,7 +48,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/movies`);
+        const res = await fetch(`${API_BASE_URL}/api/movies`);
         const data = await res.json();
         setProducts(data);
       } catch (e) {

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-const API_KEY = '8d7cd14f75ff2bb827d966152a610eab';
+const API_KEY = process.env.TMDB_API_KEY || '8d7cd14f75ff2bb827d966152a610eab';
 const TMDB = 'https://api.themoviedb.org/3';
 
 const GENRES = {

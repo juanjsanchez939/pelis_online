@@ -22,7 +22,7 @@ const TV_CATS = [
 export default function TmdbSection({ mode = "movies" }) {
     const { t } = useTranslation();
     const { user } = useContext(UserContext);
-    const endpoint = mode === "tv" ? "/api/tv/all" : "/api/movies/all";
+    const endpoint = mode === "tv" ? "/tv/all" : "/movies/all";
     const categories = mode === "tv" ? TV_CATS : MOVIE_CATS;
     const [items, setItems] = useState([]);
     const [cat, setCat] = useState("");
