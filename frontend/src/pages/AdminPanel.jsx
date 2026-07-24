@@ -110,7 +110,7 @@ function UserManager({ apiHeaders }) {
           setMessage(err.error || "Error al actualizar.");
         }
       } else {
-        const res = await fetch(`${API_BASE_URL}/user", {
+        const res = await fetch(`${API_BASE_URL}/user`, {
           method: "POST",
           headers: apiHeaders,
           body: JSON.stringify(body),
@@ -254,7 +254,7 @@ function MovieManager({ apiHeaders }) {
 
   const loadMovies = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/movies", { headers: apiHeaders });
+      const res = await fetch(`${API_BASE_URL}/movies`, { headers: apiHeaders });
       if (res.ok) {
         const data = await res.json();
         setMovies(data);
@@ -304,7 +304,7 @@ function MovieManager({ apiHeaders }) {
           setMessage(err.error || "Error al actualizar.");
         }
       } else {
-        const res = await fetch(`${API_BASE_URL}/movies", {
+        const res = await fetch(`${API_BASE_URL}/movies`, {
           method: "POST",
           headers: apiHeaders,
           body: JSON.stringify(body),
