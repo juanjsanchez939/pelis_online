@@ -38,12 +38,13 @@ async function start() {
 
   const app = express();
   const router = express.Router();
+
+  tmdbRoutes(app);
+
   app.use('/api', router);
   app.use(router);
 
   configureMiddlewares(router);
-
-  tmdbRoutes(app);
 
   app.get('/', (req, res) => {
     res.json({ name: 'PelisOnline API', status: 'online', endpoints: ['/movies', '/login', '/register'] });
