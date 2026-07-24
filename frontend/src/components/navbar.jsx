@@ -186,36 +186,34 @@ const Navbar = ({ theme, toggleTheme }) => {
         </button>
       </div>
 
-      <button className="hamburger" onClick={() => setMobileMenu(!mobileMenu)}>
-        <span className={`hamburger-line ${mobileMenu ? "open" : ""}`} />
-        <span className={`hamburger-line ${mobileMenu ? "open" : ""}`} />
-        <span className={`hamburger-line ${mobileMenu ? "open" : ""}`} />
+      <button className={`hamburger ${mobileMenu ? "open" : ""}`} onClick={() => setMobileMenu(!mobileMenu)}>
+        <span className="hamburger-line" />
+        <span className="hamburger-line" />
+        <span className="hamburger-line" />
       </button>
 
-      {mobileMenu && (
-        <div className="mobile-menu" onClick={() => setMobileMenu(false)}>
-          <div className="mobile-menu-inner" onClick={e => e.stopPropagation()}>
-            <button className="mobile-close" onClick={() => setMobileMenu(false)}>✕</button>
-            {!isHome && <Link to="/" onClick={() => setMobileMenu(false)}>{t('navbar.home')}</Link>}
-            <Link to="/ayuda" onClick={() => setMobileMenu(false)}>{t('navbar.moreInfo')}</Link>
-            {user && <Link to="/perfil" onClick={() => setMobileMenu(false)}>{t('navbar.myProfile')}</Link>}
-            {user?.roles?.includes("admin") && <Link to="/admin" onClick={() => setMobileMenu(false)}>{t('navbar.admin')}</Link>}
-            <div className="mobile-menu-actions">
-              {user ? (
-                <button className="logout-nav-btn" onClick={() => { handleLogout(); setMobileMenu(false); }}>{t('navbar.logout')}</button>
-              ) : (
-                <Link to="/login" onClick={() => setMobileMenu(false)}>
-                  <button className="login-nav-btn">{t('navbar.login')}</button>
-                </Link>
-              )}
-              <button className="lang-toggle-btn" onClick={toggleLang}>{i18n.language === 'es' ? '🇺🇸 EN' : '🇪🇸 ES'}</button>
-              <button className="theme-toggle-btn" onClick={toggleTheme}>
-                {theme === "dark-theme" ? <LightIcon /> : <DarkIcon />}
-              </button>
-            </div>
+      <div className={`mobile-menu ${mobileMenu ? "open" : ""}`}>
+        <div className="mobile-menu-inner">
+          <button className="mobile-close" onClick={() => setMobileMenu(false)}>✕</button>
+          {!isHome && <Link to="/" onClick={() => setMobileMenu(false)}>{t('navbar.home')}</Link>}
+          <Link to="/ayuda" onClick={() => setMobileMenu(false)}>{t('navbar.moreInfo')}</Link>
+          {user && <Link to="/perfil" onClick={() => setMobileMenu(false)}>{t('navbar.myProfile')}</Link>}
+          {user?.roles?.includes("admin") && <Link to="/admin" onClick={() => setMobileMenu(false)}>{t('navbar.admin')}</Link>}
+          <div className="mobile-menu-actions">
+            {user ? (
+              <button className="logout-nav-btn" onClick={() => { handleLogout(); setMobileMenu(false); }}>{t('navbar.logout')}</button>
+            ) : (
+              <Link to="/login" onClick={() => setMobileMenu(false)}>
+                <button className="login-nav-btn">{t('navbar.login')}</button>
+              </Link>
+            )}
+            <button className="lang-toggle-btn" onClick={toggleLang}>{i18n.language === 'es' ? '🇺🇸' : '🇪🇸'}</button>
+            <button className="theme-toggle-btn" onClick={toggleTheme}>
+              {theme === "dark-theme" ? <LightIcon /> : <DarkIcon />}
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
