@@ -5,49 +5,46 @@ import configureDependencies from './configure_dependencies.js';
 import configureMiddlewares from './middlewares/configure_middlewares.js';
 import { seedMovies, seedAdmin } from './seed_movies.js';
 
-if (!config.jwtKey) {
-  console.warn('⚠️  No se ha definido un JWT_KEY. La autenticación no funcionará.');
-}
+async function start() {
+  if (!config.jwtKey) {
+    console.warn('⚠️  No se ha definido un JWT_KEY. La autenticación no funcionará.');
+  }
 
-console.log('🔍 Conectando a MongoDB...');
+  console.log('🔍 Conectando a MongoDB...');
 
-mongoose.connect(config.dbConnection, {
-  dbName: config.dbName,
-  serverSelectionTimeoutMS: 5000,
-})
-  .then(async () => {
+  try {
+    await mongoose.connect(config.dbConnection, {
+      dbName: config.dbName,
+      serverSelectionTimeoutMS: 10000,
+    });
     console.log('✅ Conectado a MongoDB exitosamente');
     console.log(`🖥️  Host: ${mongoose.connection.host}`);
     console.log(`📊 Base de datos: ${config.dbName}`);
-
-    const MovieModel = mongoose.model('movies');
-    const count = await MovieModel.countDocuments();
-    if (count === 0) {
-      console.log('📥 Base de datos vacía. Sembrando...');
-      await seedMovies();
-      await seedAdmin();
-    } else {
-      await seedAdmin();
-    }
-  })
-  .catch(error => {
+  } catch (error) {
     console.error('❌ Error al conectar a MongoDB:', error.message);
     process.exit(1);
-  });
-
-const app = express();
-const router = express.Router();
-app.use('/api', router);
-app.use(router);
-
-configureMiddlewares(router);
-
-configureDependencies();
-
-app.listen(
-  config.port,
-  '0.0.0.0',
-  () => {
-    console.log(`🚀 Servidor corriendo en http://0.0.0.0:${config.port}`);
   }
-);
+
+  configureDependencies();
+
+  const MovieModel = mongoose.model('movies');
+  const count = await MovieModel.countDocuments();
+  if (count === 0) {
+    console.log('📥 Base de datos vacía. Sembrando películas...');
+    await seedMovies();
+  }
+  await seedAdmin();
+
+  const app = express();
+  const router = express.Router();
+  app.use('/api', router);
+  app.use(router);
+
+  configureMiddlewares(router);
+
+  app.listen(config.port, '0.0.0.0', () => {
+    console.log(`🚀 Servidor corriendo en http://0.0.0.0:${config.port}`);
+  });
+}
+
+start();
