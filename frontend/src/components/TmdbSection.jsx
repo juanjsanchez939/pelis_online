@@ -21,26 +21,26 @@ export default function TmdbSection({ mode = "movies" }) {
     const endpoint = mode === "tv" ? "/api/tv/all" : "/api/movies/all";
     const categories = mode === "tv" ? TV_CATS : MOVIE_CATS;
     const [items, setItems] = useState([]);
-    const [cat, setCat] = useState("all");
+    const [cat, setCat] = useState("");
+    const [init, setInit] = useState(false);
 
     useEffect(() => {
         axios.get(`${API_BASE_URL}${endpoint}`)
-            .then(r => setItems(r.data))
+            .then(r => {
+                setItems(r.data);
+                if (!init && categories.length > 0) {
+                    setCat(categories[0].key);
+                    setInit(true);
+                }
+            })
             .catch(() => setItems([]));
     }, [mode]);
 
-    const filtered = cat === "all" ? items : items.filter(m => m.tag === cat);
+    const filtered = cat ? items.filter(m => m.tag === cat) : items;
 
     return (
         <div>
             <div className="genre-vertical">
-                <button
-                    className={`genre-vbtn ${cat === "all" ? "active" : ""}`}
-                    onClick={() => setCat("all")}
-                >
-                    <span className="genre-vname">Todas</span>
-                    <span className="genre-vcount">{items.length}</span>
-                </button>
                 {categories.map(c => (
                     <button
                         key={c.key}
@@ -49,7 +49,7 @@ export default function TmdbSection({ mode = "movies" }) {
                     >
                         <span className="genre-vicon">{c.icon}</span>
                         <span className="genre-vname">{c.label}</span>
-                        <span className="genre-vcount">{cat === c.key ? filtered.length : items.filter(m => m.tag === c.key).length}</span>
+                        <span className="genre-vcount">{items.filter(m => m.tag === c.key).length}</span>
                     </button>
                 ))}
             </div>
