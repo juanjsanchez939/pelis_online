@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useFavs } from "../hooks/useFavs.js";
 import { SnackbarContext } from "../context/snackbarContext.js";
@@ -25,6 +25,8 @@ function Stars({ rating }) {
 
 export default function ProductPage() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const isTv = searchParams.get("type") === "tv";
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
   const [movie, setMovie] = useState(null);
@@ -38,9 +40,14 @@ export default function ProductPage() {
     const fetchMovie = async () => {
       try {
         const isNumeric = /^\d+$/.test(id);
-        const url = isNumeric
-          ? `${API_BASE_URL}/tmdb/movie/${id}`
-          : `${API_BASE_URL}/movies/${id}`;
+        let url;
+        if (isTv && isNumeric) {
+          url = `${API_BASE_URL}/tmdb/tv/${id}`;
+        } else if (isNumeric) {
+          url = `${API_BASE_URL}/tmdb/movie/${id}`;
+        } else {
+          url = `${API_BASE_URL}/movies/${id}`;
+        }
         const res = await axios.get(url);
         setMovie(res.data);
       } catch (e) {
@@ -50,7 +57,7 @@ export default function ProductPage() {
       }
     };
     fetchMovie();
-  }, [id]);
+  }, [id, isTv]);
 
   const { toggleFav, isFav } = useFavs();
   const { showSnackbar } = useContext(SnackbarContext);

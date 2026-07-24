@@ -41,7 +41,7 @@ export default function TmdbSection({ mode = "movies" }) {
     }, [mode, cat]);
 
     const filtered = (cat ? items.filter(m => m.tag === cat) : items);
-    const display = user ? filtered : filtered.slice(0, 5);
+    const display = (user ? filtered : filtered.slice(0, 5)).map(m => ({ ...m, type: mode }));
 
     return (
         <div>

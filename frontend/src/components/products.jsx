@@ -32,7 +32,7 @@ export function Products({ products, limit }) {
 
           return (
             <div key={movie.id} className="product-card" style={{ animationDelay: `${Math.min(idx * 0.05, 1)}s` }}>
-              <Link to={`/product/${movie.id}`} className="product-link">
+              <Link to={`/product/${movie.id}${movie.type === "tv" ? "?type=tv" : ""}`} className="product-link">
                 <div className="image-wrapper">
                   <img src={getImageUrl(movie.thumbnail)} alt={movie.title} />
                   {movie.rating && (
