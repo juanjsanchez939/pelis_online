@@ -1,5 +1,5 @@
 import { useContext, useState, useRef, useEffect, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext.js";
 import { FiltersContext } from "../context/FiltersContext.js";
 import axios from "axios";
@@ -30,6 +30,8 @@ const Navbar = ({ theme, toggleTheme }) => {
   const { user, logout } = useContext(UserContext);
   const { setFilters } = useContext(FiltersContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const [searchText, setSearchText] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
@@ -141,7 +143,7 @@ const Navbar = ({ theme, toggleTheme }) => {
 
       <div className="navbar-right">
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          {!isHome && <Link to="/">Inicio</Link>}
           <Link to="/ayuda">Más Info</Link>
           {user && <Link to="/perfil">Mi Perfil</Link>}
           {user?.roles?.includes("admin") && <Link to="/admin">Admin</Link>}
