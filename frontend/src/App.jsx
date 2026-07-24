@@ -15,7 +15,7 @@ import UserPanel from './pages/UserPanel.jsx'
 import AdminPanel from './pages/AdminPanel.jsx'
 import Banner from './components/Banner.jsx'
 import OnlineUsers from './components/OnlineUsers.jsx'
-import GenreSidebar from './components/GenreSidebar.jsx'
+import { GENRE_ORDER, GENRE_ICONS } from './utils/shared.js'
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -105,13 +105,21 @@ function App() {
               )}
 
               {activeTab === "genres" && (
-                <div className="catalog-layout">
-                  <GenreSidebar
-                    selectedGenre={expandedGenre}
-                    onSelectGenre={setExpandedGenre}
-                    filteredGenres={filteredGenres}
-                  />
-                  <div className="catalog-content">
+                <>
+                  <div className="genre-vertical">
+                    {GENRE_ORDER.map(genre => (
+                      <button
+                        key={genre}
+                        className={`genre-vbtn ${expandedGenre === genre ? "active" : ""}`}
+                        onClick={() => setExpandedGenre(expandedGenre === genre ? null : genre)}
+                      >
+                        <span className="genre-vicon">{GENRE_ICONS[genre]}</span>
+                        <span className="genre-vname">{genre}</span>
+                        <span className="genre-vcount">{filteredGenres[genre]?.length || 0}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="catalog-content" style={{ padding: '12px 16px' }}>
                     {expandedGenre && filteredGenres[expandedGenre] && (
                       filteredGenres[expandedGenre].length > 0 ? (
                         <Products products={filteredGenres[expandedGenre]} />
@@ -120,10 +128,10 @@ function App() {
                       )
                     )}
                     {!expandedGenre && (
-                      <p className="genre-prompt">Seleccioná un género en la barra lateral para ver las películas</p>
+                      <p className="genre-prompt">Seleccioná un género arriba para ver las películas</p>
                     )}
                   </div>
-                </div>
+                </>
               )}
 
               <Footer />
