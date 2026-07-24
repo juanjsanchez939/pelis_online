@@ -29,9 +29,7 @@ const Banner = () => {
     />
   ))}
 
-  <div className="banner-content">
-    <button className="btn-primary" onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>Ver Catálogo</button>
-  </div>
+  <div className="banner-content" />
 </section>
 
   );

@@ -1,43 +1,36 @@
 import { TmdbService } from '../services/tmdb.js';
 
 export function tmdbRoutes(app) {
-    app.get('/api/movies/popular', async (req, res) => {
-        const data = await TmdbService.getPopularMovies();
-        res.json(data);
+
+    app.get('/api/movies/all', async (req, res) => {
+        const [popular, nowPlaying, upcoming, topRated] = await Promise.all([
+            TmdbService.getPopularMovies(),
+            TmdbService.getNowPlaying(),
+            TmdbService.getUpcoming(),
+            TmdbService.getTopRated(),
+        ]);
+        const seen = new Set();
+        const all = [...popular, ...nowPlaying, ...upcoming, ...topRated].filter(m => {
+            if (seen.has(m.id)) return false;
+            seen.add(m.id);
+            return true;
+        });
+        res.json(all);
     });
 
-    app.get('/api/movies/now-playing', async (req, res) => {
-        const data = await TmdbService.getNowPlaying();
-        res.json(data);
-    });
-
-    app.get('/api/movies/upcoming', async (req, res) => {
-        const data = await TmdbService.getUpcoming();
-        res.json(data);
-    });
-
-    app.get('/api/movies/top-rated', async (req, res) => {
-        const data = await TmdbService.getTopRated();
-        res.json(data);
-    });
-
-    app.get('/api/tv/popular', async (req, res) => {
-        const data = await TmdbService.getPopularTv();
-        res.json(data);
-    });
-
-    app.get('/api/tv/airing-today', async (req, res) => {
-        const data = await TmdbService.getAiringToday();
-        res.json(data);
-    });
-
-    app.get('/api/tv/on-the-air', async (req, res) => {
-        const data = await TmdbService.getOnTheAir();
-        res.json(data);
-    });
-
-    app.get('/api/tv/top-rated', async (req, res) => {
-        const data = await TmdbService.getTopRatedTv();
-        res.json(data);
+    app.get('/api/tv/all', async (req, res) => {
+        const [popular, airing, onAir, topRated] = await Promise.all([
+            TmdbService.getPopularTv(),
+            TmdbService.getAiringToday(),
+            TmdbService.getOnTheAir(),
+            TmdbService.getTopRatedTv(),
+        ]);
+        const seen = new Set();
+        const all = [...popular, ...airing, ...onAir, ...topRated].filter(t => {
+            if (seen.has(t.id)) return false;
+            seen.add(t.id);
+            return true;
+        });
+        res.json(all);
     });
 }
