@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 function getDevServerHost() {
@@ -17,10 +16,7 @@ const devHost = getDevServerHost();
 
 export const API_BASE_URL = devHost
   ? `http://${devHost}:3001`
-  : Platform.select({
-      android: 'http://10.0.2.2:3001',
-      ios: 'http://localhost:3001',
-      default: 'http://localhost:3001',
-    });
+  : 'https://pelis-online-api.onrender.com';
+
 
 export const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
