@@ -9,7 +9,7 @@
 .admin-panel-page h1 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #e50914;
+  border-bottom: 2px solid #2563eb;
   padding-bottom: 0.5rem;
 }
 
@@ -31,14 +31,14 @@
 }
 
 .admin-tab:hover {
-  border-color: #e50914;
+  border-color: #2563eb;
   color: #fff;
 }
 
 .admin-tab.active {
-  background: #e50914;
+  background: #2563eb;
   color: white;
-  border-color: #e50914;
+  border-color: #2563eb;
 }
 
 .admin-section {
@@ -71,7 +71,7 @@
 .admin-form h3 {
   font-size: 1.1rem;
   margin-bottom: 1.2rem;
-  color: #e50914;
+  color: #2563eb;
 }
 
 .admin-form-grid {
@@ -108,7 +108,7 @@
 .admin-field input:focus,
 .admin-field textarea:focus {
   outline: none;
-  border-color: #e50914;
+  border-color: #2563eb;
 }
 
 .admin-field textarea {
@@ -132,7 +132,7 @@
 }
 
 .admin-btn.save {
-  background: #e50914;
+  background: #2563eb;
   color: white;
 }
 
@@ -227,7 +227,7 @@
 .auth-message {
   text-align: center;
   margin-top: 120px;
-  color: #e50914;
+  color: #2563eb;
   font-size: 1.1rem;
 }
 
