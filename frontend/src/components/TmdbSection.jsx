@@ -14,7 +14,7 @@ const ICONS = {
 const MOVIE_KEYS = ["popular", "now-playing", "upcoming", "top-rated"];
 const TV_KEYS = ["popular", "airing-today", "on-the-air", "top-rated"];
 
-export default function TmdbSection({ mode = "movies" }) {
+export default function TmdbSection({ mode = "movies", localData = [] }) {
     const { t } = useTranslation();
     const { user } = useContext(UserContext);
     const endpoint = mode === "tv" ? "/tv/all" : "/movies/all";
@@ -42,7 +42,8 @@ export default function TmdbSection({ mode = "movies" }) {
     }, [mode, cat]);
 
     const filtered = (cat ? items.filter(m => m.tag === cat) : items);
-    const display = (user ? filtered : filtered.slice(0, 5)).map(m => ({ ...m, type: mode }));
+    const combined = [...localData, ...filtered];
+    const display = (user ? combined : combined.slice(0, 5)).map(m => ({ ...m, type: mode }));
 
     return (
         <div>
@@ -63,7 +64,7 @@ export default function TmdbSection({ mode = "movies" }) {
                 <Products products={display} limit={user ? undefined : 5} />
                 {!user && (
                     <p style={{ textAlign: 'center', padding: '20px', color: '#aaa' }}>
-                        <Link to="/login" style={{ color: '#e50914' }}>{t('tmdb.loginPrompt')}</Link> {t('tmdb.toSeeAll', { count: filtered.length, type: mode === "tv" ? t('tmdb.series') : t('tmdb.movies') })}
+                        <Link to="/login" style={{ color: '#e50914' }}>{t('tmdb.loginPrompt')}</Link> {t('tmdb.toSeeAll', { count: combined.length, type: mode === "tv" ? t('tmdb.series') : t('tmdb.movies') })}
                     </p>
                 )}
             </div>

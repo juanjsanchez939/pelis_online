@@ -13,6 +13,8 @@ const movieSchema = new mongoose.Schema({
     rating: Number,
     cast: [String],
     trailer: String,
+    tmdbId: Number,
+    type: String,
     comments: [
         {
             user: String,

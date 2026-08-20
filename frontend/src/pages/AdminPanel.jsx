@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext.js";
-import { API_BASE_URL } from "../utils/shared.js";
+import { API_BASE_URL, TMDB_IMAGE_BASE_URL } from "../utils/shared.js";
 import "./AdminPanel.css";
 
 export default function AdminPanel() {
@@ -40,7 +40,7 @@ export default function AdminPanel() {
           className={`admin-tab ${activeTab === "peliculas" ? "active" : ""}`}
           onClick={() => setActiveTab("peliculas")}
         >
-          Películas
+          Películas y Series
         </button>
       </div>
 
@@ -244,12 +244,10 @@ function UserManager({ apiHeaders }) {
 
 function MovieManager({ apiHeaders }) {
   const [movies, setMovies] = useState([]);
-  const [editingMovie, setEditingMovie] = useState(null);
-  const [form, setForm] = useState({
-    title: "", category: "", thumbnail: "", description: "", year: "",
-    director: "", duration: "", rating: "", trailer: "", cast: ""
-  });
   const [message, setMessage] = useState("");
+  const [tmdbQuery, setTmdbQuery] = useState("");
+  const [tmdbResults, setTmdbResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const loadMovies = async () => {
     try {
@@ -263,86 +261,69 @@ function MovieManager({ apiHeaders }) {
     }
   };
 
-  useEffect(() => {
-    loadMovies();
-  }, []);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleSearchTmdb = async (e) => {
+    e.preventDefault();
+    if (!tmdbQuery) return;
+    setIsSearching(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/tmdb/search?q=${encodeURIComponent(tmdbQuery)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setTmdbResults(data.filter(item => item.media_type === "movie" || item.media_type === "tv"));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-
-    const body = {
-      title: form.title,
-      category: form.category.split(",").map((c) => c.trim()).filter(Boolean),
-      thumbnail: form.thumbnail,
-      description: form.description,
-      year: parseInt(form.year) || 0,
-      director: form.director,
-      duration: form.duration,
-      rating: parseFloat(form.rating) || 0,
-      trailer: form.trailer,
-      cast: form.cast.split(",").map((c) => c.trim()).filter(Boolean),
-    };
-
+  const handleImportTmdb = async (item, forceType) => {
     try {
-      if (editingMovie) {
-        const res = await fetch(`${API_BASE_URL}/movies/${editingMovie._id}`, {
-          method: "PATCH",
-          headers: apiHeaders,
-          body: JSON.stringify(body),
-        });
-        if (res.ok) {
-          setMessage("Película actualizada correctamente.");
-          setEditingMovie(null);
-        } else {
-          const err = await res.json();
-          setMessage(err.error || "Error al actualizar.");
-        }
-      } else {
-        const res = await fetch(`${API_BASE_URL}/movies`, {
-          method: "POST",
-          headers: apiHeaders,
-          body: JSON.stringify(body),
-        });
-        if (res.ok) {
-          setMessage("Película creada correctamente.");
-        } else {
-          const err = await res.json();
-          setMessage(err.error || "Error al crear.");
-        }
-      }
+      const endpoint = item.media_type === "movie" ? `/tmdb/movie/${item.id}` : `/tmdb/tv/${item.id}`;
+      const res = await fetch(`${API_BASE_URL}${endpoint}`);
+      if (!res.ok) throw new Error("Error fetching details");
+      const details = await res.json();
 
-      setForm({
-        title: "", category: "", thumbnail: "", description: "", year: "",
-        director: "", duration: "", rating: "", trailer: "", cast: ""
+      const body = {
+        title: details.title,
+        category: details.category,
+        thumbnail: details.thumbnail,
+        description: details.description,
+        year: details.year || 0,
+        director: details.director,
+        duration: details.duration,
+        rating: details.rating || 0,
+        trailer: details.trailer,
+        cast: details.cast,
+        tmdbId: item.id,
+        type: forceType,
+      };
+
+      const postRes = await fetch(`${API_BASE_URL}/movies`, {
+        method: "POST",
+        headers: apiHeaders,
+        body: JSON.stringify(body),
       });
-      loadMovies();
+
+      if (postRes.ok) {
+        setMessage("Película importada correctamente desde TMDB.");
+        setTmdbQuery("");
+        setTmdbResults([]);
+        loadMovies();
+      } else {
+        const err = await postRes.json();
+        setMessage(err.error || "Error al importar.");
+      }
     } catch (err) {
-      setMessage("Error de conexión.");
+      setMessage("Error de conexión al importar.");
       console.error(err);
     }
   };
 
-  const handleEdit = (m) => {
-    setEditingMovie(m);
-    setForm({
-      title: m.title || "",
-      category: (m.category || []).join(", "),
-      thumbnail: m.thumbnail || "",
-      description: m.description || "",
-      year: m.year?.toString() || "",
-      director: m.director || "",
-      duration: m.duration || "",
-      rating: m.rating?.toString() || "",
-      trailer: m.trailer || "",
-      cast: (m.cast || []).join(", "),
-    });
-    setMessage("");
-  };
+  useEffect(() => {
+    loadMovies();
+  }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("¿Eliminar esta película?")) return;
@@ -360,76 +341,56 @@ function MovieManager({ apiHeaders }) {
     }
   };
 
-  const handleCancel = () => {
-    setEditingMovie(null);
-    setForm({
-      title: "", category: "", thumbnail: "", description: "", year: "",
-      director: "", duration: "", rating: "", trailer: "", cast: ""
-    });
-    setMessage("");
-  };
+
 
   return (
     <section className="admin-section">
-      <h2>Gestión de Películas</h2>
+      <h2>Gestión de Películas y Series</h2>
 
       {message && <div className="admin-message">{message}</div>}
 
-      <form className="admin-form" onSubmit={handleSubmit}>
-        <h3>{editingMovie ? "Editar Película" : "Nueva Película"}</h3>
-        <div className="admin-form-grid">
-          <div className="admin-field">
-            <label>Título</label>
-            <input name="title" value={form.title} onChange={handleChange} required />
-          </div>
-          <div className="admin-field">
-            <label>Categorías (separadas por coma)</label>
-            <input name="category" value={form.category} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Thumbnail URL</label>
-            <input name="thumbnail" value={form.thumbnail} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Año</label>
-            <input name="year" type="number" value={form.year} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Director</label>
-            <input name="director" value={form.director} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Duración</label>
-            <input name="duration" value={form.duration} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Rating</label>
-            <input name="rating" type="number" step="0.1" value={form.rating} onChange={handleChange} />
-          </div>
-          <div className="admin-field">
-            <label>Trailer URL</label>
-            <input name="trailer" value={form.trailer} onChange={handleChange} />
-          </div>
-          <div className="admin-field full-width">
-            <label>Descripción</label>
-            <textarea name="description" value={form.description} onChange={handleChange} rows={3} />
-          </div>
-          <div className="admin-field full-width">
-            <label>Reparto (separado por coma)</label>
-            <input name="cast" value={form.cast} onChange={handleChange} />
-          </div>
-        </div>
-        <div className="admin-form-actions">
-          <button type="submit" className="admin-btn save">
-            {editingMovie ? "Actualizar" : "Crear"}
+      <div className="tmdb-import-section" style={{ marginBottom: '30px', padding: '15px', backgroundColor: '#222', borderRadius: '8px' }}>
+        <h3>Importar de TMDB (Automático)</h3>
+        <form onSubmit={handleSearchTmdb} style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre..." 
+            value={tmdbQuery} 
+            onChange={(e) => setTmdbQuery(e.target.value)} 
+            style={{ flex: 1, padding: '10px', borderRadius: '4px', border: '1px solid #444', background: '#333', color: 'white' }}
+          />
+          <button type="submit" className="admin-btn save" disabled={isSearching}>
+            {isSearching ? "Buscando..." : "Buscar"}
           </button>
-          {editingMovie && (
-            <button type="button" className="admin-btn cancel" onClick={handleCancel}>
-              Cancelar
-            </button>
-          )}
-        </div>
-      </form>
+        </form>
+        {tmdbResults.length > 0 && (
+          <div className="tmdb-results" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '15px', marginTop: '15px' }}>
+            {tmdbResults.map(item => {
+              const exists = movies.some(m => m.tmdbId === item.id || m.title === (item.title || item.name));
+              return (
+              <div key={item.id} style={{ textAlign: 'center', background: '#333', padding: '10px', borderRadius: '4px' }}>
+                <img 
+                  src={item.poster_path ? `${TMDB_IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/100x150?text=No+Image'} 
+                  alt={item.title || item.name} 
+                  style={{ width: '100%', borderRadius: '4px', marginBottom: '8px' }}
+                />
+                <h4 style={{ fontSize: '14px', margin: '0 0 5px', color: '#fff' }}>{item.title || item.name}</h4>
+                <p style={{ fontSize: '12px', margin: '0 0 10px', color: '#aaa' }}>{item.media_type === "movie" ? "Película" : "Serie"} • {(item.release_date || item.first_air_date || "").split("-")[0]}</p>
+                {exists ? (
+                  <button type="button" className="admin-btn small" disabled style={{ width: '100%', backgroundColor: '#555', cursor: 'not-allowed' }}>Ya añadida</button>
+                ) : (
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    <button type="button" className="admin-btn small save" style={{ flex: 1, padding: '5px', fontSize: '11px' }} onClick={() => handleImportTmdb(item, 'movie')}>+ Peli</button>
+                    <button type="button" className="admin-btn small save" style={{ flex: 1, padding: '5px', fontSize: '11px' }} onClick={() => handleImportTmdb(item, 'tv')}>+ Serie</button>
+                  </div>
+                )}
+              </div>
+            )})}
+          </div>
+        )}
+      </div>
+
+
 
       <div className="admin-table-container">
         <table className="admin-table">
@@ -450,7 +411,6 @@ function MovieManager({ apiHeaders }) {
                 <td>{m.year}</td>
                 <td>{m.rating}</td>
                 <td className="admin-actions">
-                  <button className="admin-btn small edit" onClick={() => handleEdit(m)}>Editar</button>
                   <button className="admin-btn small delete" onClick={() => handleDelete(m._id)}>Eliminar</button>
                 </td>
               </tr>

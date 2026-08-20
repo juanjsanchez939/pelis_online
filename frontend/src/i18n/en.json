@@ -14,15 +14,15 @@
     "noResults": "No movies found"
   },
   "tabs": {
-    "estreno2026": "2026 Releases",
+    "local": "Recently Added",
     "peliculas": "Movies",
-    "series": "TV Series"
+    "series": "TV Shows"
   },
   "estreno": {
-    "title": "2026 RELEASES",
-    "subtitle": "The most anticipated releases of the year",
-    "loginPrompt": "Log in",
-    "toSee": "to see all {{count}} 2026 releases"
+    "title": "RECENTLY ADDED",
+    "subtitle": "The latest movies and TV shows added to our database",
+    "loginPrompt": "Sign in",
+    "toSee": "to see all {{count}} local titles"
   },
   "tmdb": {
     "movies": "movies",

@@ -5,6 +5,17 @@ const API_KEY = process.env.TMDB_API_KEY || '8d7cd14f75ff2bb827d966152a610eab';
 const TMDB = 'https://api.themoviedb.org/3';
 
 export function tmdbRoutes(app) {
+    app.get('/api/tmdb/search', async (req, res) => {
+        try {
+            const query = req.query.q;
+            if (!query) return res.json([]);
+            const url = `${TMDB}/search/multi?api_key=${API_KEY}&language=es-ES&query=${encodeURIComponent(query)}`;
+            const searchRes = await axios.get(url);
+            res.json(searchRes.data.results || []);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
+    });
 
     app.get('/api/tmdb/movie/:id', async (req, res) => {
         try {
@@ -31,6 +42,7 @@ export function tmdbRoutes(app) {
                 cast: credits?.cast?.slice(0, 10).map(c => c.name) || [],
                 trailer: trailer ? `https://www.youtube.com/embed/${trailer.key}` : '',
                 category: (m.genres || []).map(g => g.name),
+                type: 'movie',
                 comments: [],
             });
         } catch (e) {
@@ -63,6 +75,7 @@ export function tmdbRoutes(app) {
                 cast: credits?.cast?.slice(0, 10).map(c => c.name) || [],
                 trailer: trailer ? `https://www.youtube.com/embed/${trailer.key}` : '',
                 category: (t.genres || []).map(g => g.name),
+                type: 'tv',
                 comments: [],
             });
         } catch (e) {

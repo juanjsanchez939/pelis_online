@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import Navbar from './components/navbar.jsx'
 import { Products } from './components/products.jsx'
 import { useState, useEffect, useMemo, useContext } from 'react'
@@ -23,7 +23,8 @@ function App() {
   const { t } = useTranslation();
   const { user } = useContext(UserContext)
   const [products, setProducts] = useState([]);
-  const [activeTab, setActiveTab] = useState("estreno2026")
+  const [activeTab, setActiveTab] = useState("local")
+  const location = useLocation();
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -35,10 +36,10 @@ function App() {
       }
     };
     fetchMovies();
-  }, []);
+  }, [location.pathname]);
 
-  const releases2026 = useMemo(() => {
-    return products.filter(p => p.year === 2026);
+  const localCatalog = useMemo(() => {
+    return [...products].reverse();
   }, [products]);
 
   const [theme, setTheme] = useState("dark-theme");
@@ -65,11 +66,11 @@ function App() {
 
               <div className="catalog-tabs">
                 <button
-                  className={`tab-btn ${activeTab === "estreno2026" ? "active" : ""}`}
-                  onClick={() => setActiveTab("estreno2026")}
+                  className={`tab-btn ${activeTab === "local" ? "active" : ""}`}
+                  onClick={() => setActiveTab("local")}
                 >
                   <span className="tab-icon">🆕</span>
-                  {t('tabs.estreno2026')}
+                  {t('tabs.local')}
                 </button>
                 <button
                   className={`tab-btn ${activeTab === "peliculas" ? "active" : ""}`}
@@ -87,7 +88,7 @@ function App() {
                 </button>
               </div>
 
-              {activeTab === "estreno2026" && (
+              {activeTab === "local" && (
                 <>
                   <div className="cinema-header">
                     <div className="cinema-strip" />
@@ -97,21 +98,16 @@ function App() {
                     <p className="cinema-subtitle">{t('estreno.subtitle')}</p>
                     <div className="cinema-strip" />
                   </div>
-                  <Products products={user ? releases2026 : releases2026.slice(0, 5)} limit={user ? undefined : 5} />
-                  {!user && (
-                    <p style={{ textAlign: 'center', padding: '20px', color: '#aaa' }}>
-                      <Link to="/login" style={{ color: '#e50914' }}>{t('estreno.loginPrompt')}</Link> {t('estreno.toSee', { count: releases2026.length })}
-                    </p>
-                  )}
+                  <Products products={localCatalog.slice(0, 20)} />
                 </>
               )}
 
               {activeTab === "peliculas" && (
-                <TmdbSection mode="movies" />
+                <TmdbSection mode="movies" localData={localCatalog.filter(p => p.type === 'movie' || !p.type)} />
               )}
 
               {activeTab === "series" && (
-                <TmdbSection mode="tv" />
+                <TmdbSection mode="tv" localData={localCatalog.filter(p => p.type === 'tv')} />
               )}
 
               <Footer />
