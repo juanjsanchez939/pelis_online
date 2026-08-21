@@ -3,15 +3,36 @@ import { getDependency } from "../libs/dependencies.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
+export function sanitizeUserFilter(filter) {
+  if (!filter || typeof filter !== 'object') return {};
+  const sanitized = {};
+  const allowedKeys = ['username', 'email', 'fullName', 'roles', 'uuid'];
+  for (const key of allowedKeys) {
+    if (filter[key] !== undefined) {
+      sanitized[key] = filter[key];
+    }
+  }
+  return sanitized;
+}
+
 export class UserService {
   static async getSingleOrNullByUsername(username) {
     const UserModel = getDependency('UserModel');
-    return (await UserModel.find({ username }))[0];
+    return await UserModel.findOne({ username });
   }
 
-  static async get(filter) {
+  static async get(filter, options = {}) {
     const UserModel = getDependency('UserModel');
-    return await UserModel.find(filter);
+    const safeFilter = sanitizeUserFilter(filter);
+    let query = UserModel.find(safeFilter);
+    if (options.skip) query = query.skip(options.skip);
+    if (options.limit) query = query.limit(options.limit);
+    return await query;
+  }
+
+  static async count(filter) {
+    const UserModel = getDependency('UserModel');
+    return await UserModel.countDocuments(sanitizeUserFilter(filter));
   }
 
   static async create(user) {

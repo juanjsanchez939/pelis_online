@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "dev": "node index.js",
     "start": "node index.js",
     "lint": "eslint ."
@@ -18,12 +20,14 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
-    "express": "^5.1.0",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
-    "eslint": "^9.28.0"
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^9.28.0",
+    "vitest": "^4.1.11"
   }
 }

@@ -1,4 +1,3 @@
-import express from 'express';
 import { controllers } from '../controllers/controllers.js';
 import { errorHandlerMiddleware } from './error_handler_middleware.js';
 import { logMiddleware } from './log_middleware.js';

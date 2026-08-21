@@ -1,6 +1,6 @@
 import axios from 'axios';
+import config from '../config.js';
 
-const API_KEY = process.env.TMDB_API_KEY || '8d7cd14f75ff2bb827d966152a610eab';
 const TMDB = 'https://api.themoviedb.org/3';
 
 const GENRE_MAP = {
@@ -50,34 +50,34 @@ export class TmdbService {
     }
 
     static async getPopularMovies() {
-        return await TmdbService.fetchPages(`${TMDB}/movie/popular?api_key=${API_KEY}&language=es-ES`, 7, 'popular', mapMovie);
+        return await TmdbService.fetchPages(`${TMDB}/movie/popular?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'popular', mapMovie);
     }
 
     static async getNowPlaying() {
-        return await TmdbService.fetchPages(`${TMDB}/movie/now_playing?api_key=${API_KEY}&language=es-ES`, 7, 'now-playing', mapMovie);
+        return await TmdbService.fetchPages(`${TMDB}/movie/now_playing?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'now-playing', mapMovie);
     }
 
     static async getUpcoming() {
-        return await TmdbService.fetchPages(`${TMDB}/movie/upcoming?api_key=${API_KEY}&language=es-ES`, 7, 'upcoming', mapMovie);
+        return await TmdbService.fetchPages(`${TMDB}/movie/upcoming?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'upcoming', mapMovie);
     }
 
     static async getTopRated() {
-        return await TmdbService.fetchPages(`${TMDB}/movie/top_rated?api_key=${API_KEY}&language=es-ES`, 7, 'top-rated', mapMovie);
+        return await TmdbService.fetchPages(`${TMDB}/movie/top_rated?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'top-rated', mapMovie);
     }
 
     static async getPopularTv() {
-        return await TmdbService.fetchPages(`${TMDB}/tv/popular?api_key=${API_KEY}&language=es-ES`, 7, 'popular', mapTv);
+        return await TmdbService.fetchPages(`${TMDB}/tv/popular?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'popular', mapTv);
     }
 
     static async getAiringToday() {
-        return await TmdbService.fetchPages(`${TMDB}/tv/airing_today?api_key=${API_KEY}&language=es-ES`, 7, 'airing-today', mapTv);
+        return await TmdbService.fetchPages(`${TMDB}/tv/airing_today?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'airing-today', mapTv);
     }
 
     static async getOnTheAir() {
-        return await TmdbService.fetchPages(`${TMDB}/tv/on_the_air?api_key=${API_KEY}&language=es-ES`, 7, 'on-the-air', mapTv);
+        return await TmdbService.fetchPages(`${TMDB}/tv/on_the_air?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'on-the-air', mapTv);
     }
 
     static async getTopRatedTv() {
-        return await TmdbService.fetchPages(`${TMDB}/tv/top_rated?api_key=${API_KEY}&language=es-ES`, 7, 'top-rated', mapTv);
+        return await TmdbService.fetchPages(`${TMDB}/tv/top_rated?api_key=${config.tmdbApiKey}&language=es-ES`, 7, 'top-rated', mapTv);
     }
 }

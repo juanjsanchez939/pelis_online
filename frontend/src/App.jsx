@@ -36,7 +36,7 @@ function App() {
       }
     };
     fetchMovies();
-  }, [location.pathname]);
+  }, []); // Solo al montar, no en cada cambio de ruta
 
   const localCatalog = useMemo(() => {
     return [...products].reverse();

@@ -6,12 +6,9 @@ import configureMiddlewares from './middlewares/configure_middlewares.js';
 import { corsMiddleware } from './middlewares/cors_middleware.js';
 import { seedAllMovies, seedAdmin } from './seed_movies.js';
 import { tmdbRoutes } from './controllers/tmdb.js';
+import { authorizationMiddleware } from './middlewares/authorization_middleware.js';
 
 async function start() {
-  if (!config.jwtKey) {
-    console.warn('⚠️  No se ha definido un JWT_KEY. La autenticación no funcionará.');
-  }
-
   console.log('🔍 Conectando a MongoDB...');
 
   try {
@@ -53,12 +50,15 @@ async function start() {
     res.json({ name: 'ClipNow API', status: 'online', endpoints: ['/movies', '/login', '/register'] });
   });
 
-  app.get('/reseed', async (req, res) => {
+  app.post('/reseed', authorizationMiddleware, async (req, res) => {
+    if (!req.session?.roles?.includes('admin')) {
+      return res.status(403).json({ error: 'Acceso denegado: se requiere rol admin' });
+    }
     const MovieModel = mongoose.model('movies');
     await MovieModel.deleteMany({});
-    res.json({ status: 'Resembrando...' });
-      await seedAllMovies();
+    await seedAllMovies();
     console.log('✅ Resiembra completada');
+    res.json({ status: 'Resiembra completada' });
   });
 
   app.listen(config.port, '0.0.0.0', () => {

@@ -58,16 +58,20 @@ export default function AdminPanel() {
 
 function UserManager({ apiHeaders }) {
   const [users, setUsers] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [editingUser, setEditingUser] = useState(null);
   const [form, setForm] = useState({ username: "", email: "", password: "", fullName: "", roles: "user" });
   const [message, setMessage] = useState("");
 
-  const loadUsers = async () => {
+  const loadUsers = async (page = 1) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/user`, { headers: apiHeaders });
+      const res = await fetch(`${API_BASE_URL}/user?page=${page}&limit=20`, { headers: apiHeaders });
       if (res.ok) {
         const data = await res.json();
-        setUsers(data);
+        setUsers(data.data || data);
+        if (data.pagination) {
+          setPagination(data.pagination);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -123,7 +127,7 @@ function UserManager({ apiHeaders }) {
       }
 
       setForm({ username: "", email: "", password: "", fullName: "", roles: "user" });
-      loadUsers();
+      loadUsers(pagination.page);
     } catch (err) {
       setMessage("Error de conexión.");
       console.error(err);
@@ -151,7 +155,7 @@ function UserManager({ apiHeaders }) {
       });
       if (res.ok) {
         setMessage("Usuario eliminado.");
-        loadUsers();
+        loadUsers(pagination.page);
       }
     } catch (err) {
       console.error(err);
@@ -238,7 +242,26 @@ function UserManager({ apiHeaders }) {
           </tbody>
         </table>
       </div>
-    </section>
+
+      {pagination.totalPages > 1 && (
+        <div className="admin-pagination">
+          <button
+            className="admin-btn small"
+            onClick={() => loadUsers(pagination.page - 1)}
+            disabled={pagination.page <= 1}
+          >
+            Anterior
+          </button>
+          <span>Página {pagination.page} de {pagination.totalPages}</span>
+          <button
+            className="admin-btn small"
+            onClick={() => loadUsers(pagination.page + 1)}
+            disabled={pagination.page >= pagination.totalPages}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
   );
 }
 

@@ -1,15 +1,17 @@
 import { TmdbService } from '../services/tmdb.js';
 import axios from 'axios';
+import config from '../config.js';
+import { rateLimiter } from '../middlewares/rate_limiter.js';
 
-const API_KEY = process.env.TMDB_API_KEY || '8d7cd14f75ff2bb827d966152a610eab';
 const TMDB = 'https://api.themoviedb.org/3';
+const tmdbRateLimiter = rateLimiter(30, 60000);
 
 export function tmdbRoutes(app) {
-    app.get('/api/tmdb/search', async (req, res) => {
+    app.get('/api/tmdb/search', tmdbRateLimiter, async (req, res) => {
         try {
             const query = req.query.q;
             if (!query) return res.json([]);
-            const url = `${TMDB}/search/multi?api_key=${API_KEY}&language=es-ES&query=${encodeURIComponent(query)}`;
+            const url = `${TMDB}/search/multi?api_key=${config.tmdbApiKey}&language=es-ES&query=${encodeURIComponent(query)}`;
             const searchRes = await axios.get(url);
             res.json(searchRes.data.results || []);
         } catch (e) {
@@ -17,14 +19,14 @@ export function tmdbRoutes(app) {
         }
     });
 
-    app.get('/api/tmdb/movie/:id', async (req, res) => {
+    app.get('/api/tmdb/movie/:id', tmdbRateLimiter, async (req, res) => {
         try {
             const detailRes = await axios.get(
-                `${TMDB}/movie/${req.params.id}?api_key=${API_KEY}&language=es-ES&append_to_response=videos`
+                `${TMDB}/movie/${req.params.id}?api_key=${config.tmdbApiKey}&language=es-ES&append_to_response=videos`
             );
             const m = detailRes.data;
             const creditsRes = await axios.get(
-                `${TMDB}/movie/${req.params.id}/credits?api_key=${API_KEY}&language=es-ES`
+                `${TMDB}/movie/${req.params.id}/credits?api_key=${config.tmdbApiKey}&language=es-ES`
             ).catch(() => null);
             const credits = creditsRes?.data;
             const trailer = m.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
@@ -50,14 +52,14 @@ export function tmdbRoutes(app) {
         }
     });
 
-    app.get('/api/tmdb/tv/:id', async (req, res) => {
+    app.get('/api/tmdb/tv/:id', tmdbRateLimiter, async (req, res) => {
         try {
             const detailRes = await axios.get(
-                `${TMDB}/tv/${req.params.id}?api_key=${API_KEY}&language=es-ES&append_to_response=videos`
+                `${TMDB}/tv/${req.params.id}?api_key=${config.tmdbApiKey}&language=es-ES&append_to_response=videos`
             );
             const t = detailRes.data;
             const creditsRes = await axios.get(
-                `${TMDB}/tv/${req.params.id}/credits?api_key=${API_KEY}&language=es-ES`
+                `${TMDB}/tv/${req.params.id}/credits?api_key=${config.tmdbApiKey}&language=es-ES`
             ).catch(() => null);
             const credits = creditsRes?.data;
             const trailer = t.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube');
@@ -83,7 +85,7 @@ export function tmdbRoutes(app) {
         }
     });
 
-    app.get('/api/movies/all', async (req, res) => {
+    app.get('/api/movies/all', tmdbRateLimiter, async (req, res) => {
         try {
             const [popular, nowPlaying, upcoming, topRated] = await Promise.all([
                 TmdbService.getPopularMovies(),
@@ -98,7 +100,7 @@ export function tmdbRoutes(app) {
         }
     });
 
-    app.get('/api/tv/all', async (req, res) => {
+    app.get('/api/tv/all', tmdbRateLimiter, async (req, res) => {
         try {
             const [popular, airing, onAir, topRated] = await Promise.all([
                 TmdbService.getPopularTv(),

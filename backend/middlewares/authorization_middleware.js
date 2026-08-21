@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
 import { ForbiddenException } from '../exceptions/forbidden_exception.js';
+import { UnauthorizedException } from '../exceptions/unauthorized_exception.js';
 
 export function authorizationMiddleware(req, res, next) {
   const auth = req.headers.authorization;
@@ -13,18 +14,26 @@ export function authorizationMiddleware(req, res, next) {
     .substring(0, 7)
     .toUpperCase();
   if (scheme !== 'BEARER ') {
-    throw new Error('Invalid authorization scheme');
+    throw new UnauthorizedException('Esquema de autorización inválido. Use Bearer token.');
   }
 
   const token = auth
     .substring(7)
     .trim();
 
-  const data = jwt.verify(token, config.jwtKey);
-
-  req.session = data;
-    
-  next();
+  try {
+    const data = jwt.verify(token, config.jwtKey);
+    req.session = data;
+    next();
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      throw new UnauthorizedException('Token expirado. Inicie sesión nuevamente.');
+    }
+    if (err.name === 'JsonWebTokenError') {
+      throw new UnauthorizedException('Token inválido.');
+    }
+    throw new UnauthorizedException('Error de autenticación.');
+  }
 }
 export function checkForRole(role) {
   return (req, res, next) => {

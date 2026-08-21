@@ -1,8 +1,9 @@
 import cors from 'cors';
+import config from '../config.js';
 
 export const corsMiddleware = cors({
-  origin: '*', // Permite todos los orígenes
+  origin: config.corsOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: false // No se envían cookies ni credenciales
+  credentials: true,
 });

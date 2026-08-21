@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "PelisOnline",
+    "slug": "pelis-online-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.anonymous.mobile"
+      "package": "com.pelisonline.mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -26,6 +26,9 @@
       "expo-status-bar",
       "expo-font",
       "expo-splash-screen"
-    ]
+    ],
+    "extra": {
+      "apiBaseUrl": "http://localhost:3001"
+    }
   }
 }

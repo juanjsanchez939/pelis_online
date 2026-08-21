@@ -6,8 +6,19 @@ export function user(app) {
     '/user',
     checkForRole('admin'),
     async (req, res) => {
-      const query = req.query;
-      const users = await UserService.get(query);
+      const page = parseInt(req.query.page || '1', 10);
+      const limit = Math.min(parseInt(req.query.limit || '20', 10), 100);
+      const skip = (page - 1) * limit;
+
+      const query = { ...req.query };
+      delete query.page;
+      delete query.limit;
+
+      const [users, total] = await Promise.all([
+        UserService.get(query, { skip, limit }),
+        UserService.count(query),
+      ]);
+
       const result = users.map(user => ({
         uuid: user.uuid,
         username: user.username,
@@ -15,8 +26,16 @@ export function user(app) {
         email: user.email,
         roles: user.roles,
       }));
-    
-      res.send(result);
+
+      res.send({
+        data: result,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
     }
   );
 
